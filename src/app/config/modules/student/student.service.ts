@@ -1,23 +1,43 @@
-import { Student } from './student.interface';
-import { StudentModel } from './student.model';
+// import { TStudent } from './student.interface';
 
-const createStudentIntoDB = async (student: Student) => {
-  const result = await StudentModel.create(student);
-  return result;
-};
+import { Student } from './student.model';
+
+// const createStudentIntoDB = async (student: TStudent) => {
+//   if (await Student.isUserExists(student.id)) {
+//     throw new Error('User Already Exist');
+//   }
+//   const result = await Student.create(student);
+//   return result;
+// };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await StudentModel.find({ id });
+  // const result = await Student.findOne({ id });
+  const result = await Student.findOne({ id })
+    .populate('user')
+    .populate('academicSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
+  // console.log(result);
   return result;
 };
 
 const getAllStudentFromDB = async () => {
-  const result = await StudentModel.find();
+  const result = await Student.find();
+  return result;
+};
+
+const deleteStudentToDB = async (id: string) => {
+  const result = await Student.updateOne({ id }, { isDeleted: true });
   return result;
 };
 
 export const StudentServices = {
-  createStudentIntoDB,
+  // createStudentIntoDB,
   getSingleStudentFromDB,
   getAllStudentFromDB,
+  deleteStudentToDB,
 };

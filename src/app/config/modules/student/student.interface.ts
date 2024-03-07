@@ -1,9 +1,11 @@
-export type Name = {
+import { Model, Types } from 'mongoose';
+
+export type TName = {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 };
-export type Guardian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -11,23 +13,30 @@ export type Guardian = {
   motherOccupation: string;
   motherContactNo: string;
 };
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   contactNo: string;
   address: string;
 };
-export type Student = {
+export type TStudent = {
   id: string;
-  name: Name;
+  user: Types.ObjectId;
+  name: TName;
   gender: 'male' | 'female';
   dateOfBirth: string;
   email: string;
   contactNo: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  presentAddress: string;
-  permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  presentAddress?: string;
+  permanentAddress?: string;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
-  isActive: 'active' | 'blocked';
+  academicSemester: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
+  isDeleted: boolean;
 };
+
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
+}
